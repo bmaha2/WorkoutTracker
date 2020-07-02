@@ -13,10 +13,11 @@ app.use(express.json());
 require("./routes/apiRoutes")(app);
 require("./routes/htmlRoutes")(app);
 
-
-mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/workout", { useNewUrlParser: true }, () => {
+mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/workout", {
+    useNewUrlParser: true}, () => {
     console.log(`connected to db`)
-});
+    });
+
 
 app.listen(PORT, () => {
     console.log(`App running on port ${PORT}!`);
