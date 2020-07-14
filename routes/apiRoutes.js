@@ -1,39 +1,47 @@
-let Workout = require("../models/Workout");
+
+let Workout = require("../models/index");
 
 module.exports = function (app) {
   app.get("/api/workouts", function (req, res) {
-    Workout.find({})
-      .then(dbWorkouts => res.json(dbWorkouts))
-      .catch(err => res.json(err));
-  })
-  app.post("/api/workouts", function (req, res) {
-    Workout.create({})
-    .then(dbWorkouts => res.json(dbWorkouts))
-    .catch(err => res.json(err));
+    Workout.find({}, (err, Workout) => {
+      if (err) {
+        res.send(err);
+      }
+      res.json(Workout)
+    });
+  }).post("/api/workouts", function (req, res) {
+    let newWorkout = new Workout(req.body);
+    newWorkout.save((err, Workout) => {
+      if (err) {
+        res.send(err)
+      }
+      res.json(Workout);
+    });
   });
 
   app.get("/api/workouts/range", function (req, res) {
-    Workout.find({})
-    .then(dbWorkouts => res.json(dbWorkouts))
-    .catch(err => res.json(err));
-  });
-  app.put("/api/workouts/:id", (req, res) => {
-    Workout.findOne({ _id: req.params.id }, {
-      $push: {
-        exercises: [
-          {
-            "type": req.body.type,
-            "name": req.body.name,
-            "duration": req.body.duration,
-            "weight": req.body.weight,
-            "reps": req.body.reps,
-            "sets": req.body.sets,
-            "distance": req.body.distance
-          }
-        ]
+    Workout.find({}, (err, Workout) => {
+      if (err) {
+        res.send(err);
       }
-    })
-    .then(dbWorkouts => res.json(dbWorkouts))
-    .catch(err => res.json(err));
+      res.json(Workout)
+    });
+  }).post("/api/workouts/range", function (req, res) {
+    let newWorkout = new Workout(req.body);
+    newWorkout.save((err, Workout) => {
+      if (err) {
+        res.send(err)
+      }
+      res.json(Workout);
+    });
+  });
+
+  app.put("/api/workouts/:id", function (req, res) {
+    Workout.findOneAndUpdate({ _id: req.params.id }, { $push: { exercises: req.body } }, { new: true }, (err, Workout) => {
+      if (err) {
+        res.send(err);
+      }
+      res.json(Workout)
+    });
   });
 };
